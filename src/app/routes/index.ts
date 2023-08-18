@@ -8,6 +8,22 @@ const moduleRoutes = [
     path: '/academic-semester',
     route: AcademicSemesterRoutes,
   },
+  // {
+  //   path: '/academic-faculties',
+  //   route: academicFacultyRoutes
+  // },
+  // {
+  //   path: '/academic-departments',
+  //   route: academicDepartmentRoutes
+  // },
+  // {
+  //   path: '/faculties',
+  //   route: facultyRoutes
+  // },
+  // {
+  //   path: '/students',
+  //   route: studentRoutes
+  // },
 ];
 
 moduleRoutes.forEach(route => router.use(route.path, route.route));
