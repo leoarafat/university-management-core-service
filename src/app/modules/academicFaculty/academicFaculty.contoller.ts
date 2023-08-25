@@ -8,7 +8,8 @@ import { academicFacultyFilterableFields } from './academicFaculty.constants';
 import { AcademicFacultyService } from './academicFaculty.service';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = AcademicFacultyService.insertIntoDB(req.body);
+  const result = await AcademicFacultyService.insertIntoDB(req.body);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
