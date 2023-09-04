@@ -4,8 +4,8 @@ import { paginationFields } from '../../../constants/pagination';
 import catchAsync from '../../../shared/catchAsync';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { offeredCourseSectionFilterableFields } from './OfferedCourseSection.constants';
 import { OfferedCourseSectionService } from './OfferedCourseSection.service';
-import { offeredCourseSectionFilterableFields } from './offeredCourseSection.constants';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await OfferedCourseSectionService.insertIntoDB(req.body);
