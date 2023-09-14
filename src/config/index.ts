@@ -7,6 +7,8 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
+  redis_url: process.env.REDIS_URL,
+  redis_expires_in: process.env.REDIS_TOKEN_EXPIRES_IN,
   database_url: process.env.DATABASE_URL,
   default_student_pass: process.env.DEFAULT_STUDENT_PASS,
   default_faculty_pass: process.env.DEFAULT_FACULTY_PASS,
