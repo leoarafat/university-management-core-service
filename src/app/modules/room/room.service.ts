@@ -4,7 +4,11 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import {
+  EVENT_ROOM_CREATED,
+  EVENT_ROOM_DELETED,
+  EVENT_ROOM_UPDATED,
   roomRelationalFields,
   roomRelationalFieldsMapper,
   roomSearchableFields,
@@ -18,6 +22,9 @@ const insertIntoDB = async (data: Room): Promise<Room> => {
       building: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_ROOM_CREATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -117,6 +124,9 @@ const updateOneInDB = async (
       building: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_ROOM_UPDATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -129,6 +139,9 @@ const deleteByIdFromDB = async (id: string): Promise<Room> => {
       building: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_ROOM_DELETED, JSON.stringify(result));
+  }
   return result;
 };
 

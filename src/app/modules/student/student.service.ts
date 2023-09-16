@@ -5,8 +5,12 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import { StudentUtils } from './studen.tutils';
 import {
+  EVENT_STUDENT_CREATED,
+  EVENT_STUDENT_DELETED,
+  EVENT_STUDENT_UPDATED,
   studentRelationalFields,
   studentRelationalFieldsMapper,
   studentSearchableFields,
@@ -22,6 +26,9 @@ const insertIntoDB = async (data: Student): Promise<Student> => {
       academicSemester: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_STUDENT_CREATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -127,6 +134,9 @@ const updateIntoDB = async (
       academicFaculty: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_STUDENT_UPDATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -141,6 +151,9 @@ const deleteFromDB = async (id: string): Promise<Student> => {
       academicFaculty: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_STUDENT_DELETED, JSON.stringify(result));
+  }
   return result;
 };
 const myCourses = async (

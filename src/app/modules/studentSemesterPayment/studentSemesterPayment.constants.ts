@@ -15,3 +15,9 @@ export const studentSemesterPaymentRelationalFieldsMapper: {
   academicSemesterId: 'academicSemester',
   studentId: 'student',
 };
+export const EVENT_STUDENT_SEMESTER_PAYMENT_CREATED =
+  'student-semester-payment.created';
+export const EVENT_STUDENT_SEMESTER_PAYMENT_UPDATED =
+  'student-semester-payment.updated';
+export const EVENT_STUDENT_SEMESTER_PAYMENT_DELETED =
+  'student-semester-payment.deleted';

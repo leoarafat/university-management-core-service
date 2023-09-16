@@ -14,3 +14,9 @@ export const semesterRegistrationRelationalFieldsMapper: {
 } = {
   academicSemesterId: 'academicSemester',
 };
+export const EVENT_SEMESTER_REGISTRATION_CREATED =
+  'semester-registration.created';
+export const EVENT_SEMESTER_REGISTRATION_UPDATED =
+  'semester-registration.updated';
+export const EVENT_SEMESTER_REGISTRATION_DELETED =
+  'semester-registration.deleted';

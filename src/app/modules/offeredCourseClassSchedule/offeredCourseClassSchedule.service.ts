@@ -4,7 +4,11 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import {
+  EVENT_OFFERED_COURSE_CLASS_SCHEDULE_CREATED,
+  EVENT_OFFERED_COURSE_CLASS_SCHEDULE_DELETED,
+  EVENT_OFFERED_COURSE_CLASS_SCHEDULE_UPDATED,
   offeredCourseClassScheduleRelationalFields,
   offeredCourseClassScheduleRelationalFieldsMapper,
   offeredCourseClassScheduleSearchableFields,
@@ -27,7 +31,12 @@ const insertIntoDB = async (
       faculty: true,
     },
   });
-
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_CLASS_SCHEDULE_CREATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -136,6 +145,12 @@ const updateOneInDB = async (
       room: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_CLASS_SCHEDULE_UPDATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -152,6 +167,12 @@ const deleteByIdFromDB = async (
       room: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_CLASS_SCHEDULE_DELETED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 

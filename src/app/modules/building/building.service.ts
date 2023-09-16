@@ -5,13 +5,22 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
-import { buildingSearchableFields } from './building.constants';
+import { RedisClient } from '../../../shared/redis';
+import {
+  EVENT_BUILDING_CREATED,
+  EVENT_BUILDING_DELETED,
+  EVENT_BUILDING_UPDATED,
+  buildingSearchableFields,
+} from './building.constants';
 import { IBuildingFilterRequest } from './building.interface';
 
 const insertIntoDB = async (data: Building): Promise<Building> => {
   const result = await prisma.building.create({
     data,
   });
+  if (result) {
+    await RedisClient.publish(EVENT_BUILDING_CREATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -84,6 +93,9 @@ const updateOneInDB = async (
     },
     data: payload,
   });
+  if (result) {
+    await RedisClient.publish(EVENT_BUILDING_UPDATED, JSON.stringify(result));
+  }
   return result;
 };
 
@@ -93,6 +105,9 @@ const deleteByIdFromDB = async (id: string): Promise<Building> => {
       id,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_BUILDING_DELETED, JSON.stringify(result));
+  }
   return result;
 };
 

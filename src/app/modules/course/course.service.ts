@@ -5,13 +5,19 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import { asyncForEach } from '../../../shared/utils';
 import {
   ICourseCreateData,
   ICourseFilterRequest,
   IPrerequisiteCourseRequest,
 } from './corse.interface';
-import { courseSearchableFields } from './course.constants';
+import {
+  EVENT_COURSE_CREATED,
+  EVENT_COURSE_DELETED,
+  EVENT_COURSE_UPDATED,
+  courseSearchableFields,
+} from './course.constants';
 
 const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
   const { preRequisiteCourses, ...courseData } = data;
@@ -61,7 +67,12 @@ const insertIntoDB = async (data: ICourseCreateData): Promise<any> => {
         },
       },
     });
-
+    if (responseData) {
+      await RedisClient.publish(
+        EVENT_COURSE_CREATED,
+        JSON.stringify(responseData)
+      );
+    }
     return responseData;
   }
 
@@ -231,6 +242,12 @@ const updateIntoDB = async (
       },
     },
   });
+  if (responseData) {
+    await RedisClient.publish(
+      EVENT_COURSE_UPDATED,
+      JSON.stringify(responseData)
+    );
+  }
   return responseData;
 };
 const deleteByIdFromDB = async (id: string): Promise<Course> => {
@@ -252,6 +269,9 @@ const deleteByIdFromDB = async (id: string): Promise<Course> => {
       id,
     },
   });
+  if (result) {
+    await RedisClient.publish(EVENT_COURSE_DELETED, JSON.stringify(result));
+  }
   return result;
 };
 const assignFaculties = async (

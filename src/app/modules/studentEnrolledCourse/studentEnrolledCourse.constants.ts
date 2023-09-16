@@ -20,3 +20,9 @@ export const studentEnrolledCourseRelationalFieldsMapper: {
   studentId: 'student',
   courseId: 'course',
 };
+export const EVENT_STUDENT_ENROLLED_COURSE_CREATED =
+  'student-enrolled-course.created';
+export const EVENT_STUDENT_ENROLLED_COURSE_UPDATED =
+  'student-enrolled-course.updated';
+export const EVENT_STUDENT_ENROLLED_COURSE_DELETED =
+  'student-enrolled-course.deleted';

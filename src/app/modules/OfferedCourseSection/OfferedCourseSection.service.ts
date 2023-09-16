@@ -6,9 +6,13 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import { asyncForEach } from '../../../shared/utils';
 import { OfferedCourseClassScheduleUtils } from '../offeredCourseClassSchedule/offeredCourseClassSchedule.utils';
 import {
+  EVENT_OFFERED_COURSE_SECTION_CREATED,
+  EVENT_OFFERED_COURSE_SECTION_DELETED,
+  EVENT_OFFERED_COURSE_SECTION_UPDATED,
   offeredCourseSectionRelationalFields,
   offeredCourseSectionRelationalFieldsMapper,
   offeredCourseSectionSearchableFields,
@@ -105,7 +109,12 @@ const insertIntoDB = async (
       },
     },
   });
-
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_SECTION_CREATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -220,6 +229,12 @@ const updateOneInDB = async (
       },
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_SECTION_UPDATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -236,6 +251,12 @@ const deleteByIdFromDB = async (id: string): Promise<OfferedCourseSection> => {
       },
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_OFFERED_COURSE_SECTION_DELETED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 

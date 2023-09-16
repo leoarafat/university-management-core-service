@@ -10,7 +10,11 @@ import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import {
+  EVENT_STUDENT_ENROLLED_COURSE_CREATED,
+  EVENT_STUDENT_ENROLLED_COURSE_DELETED,
+  EVENT_STUDENT_ENROLLED_COURSE_UPDATED,
   studentEnrolledCourseRelationalFields,
   studentEnrolledCourseRelationalFieldsMapper,
   studentEnrolledCourseSearchableFields,
@@ -55,7 +59,12 @@ const insertIntoDB = async (
       course: true,
     },
   });
-
+  if (result) {
+    await RedisClient.publish(
+      EVENT_STUDENT_ENROLLED_COURSE_CREATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -175,6 +184,12 @@ const updateOneInDB = async (
       course: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_STUDENT_ENROLLED_COURSE_UPDATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -189,6 +204,12 @@ const deleteByIdFromDB = async (id: string): Promise<StudentEnrolledCourse> => {
       course: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_STUDENT_ENROLLED_COURSE_DELETED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 

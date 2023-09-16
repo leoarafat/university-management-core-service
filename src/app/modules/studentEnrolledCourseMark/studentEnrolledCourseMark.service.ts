@@ -12,10 +12,11 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 
-import { prisma } from '../../../shared/prisma';
-import { IStudentEnrolledCourseMarkFilterRequest } from './studentEnrolledCourseMark.interface';
-import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
+import ApiError from '../../../errors/ApiError';
+import { prisma } from '../../../shared/prisma';
+
+import { IStudentEnrolledCourseMarkFilterRequest } from './studentEnrolledCourseMark.interface';
 import { StudentEnrolledCourseMarkUtils } from './studentEnrolledCourseMark.utils';
 
 const createStudentEnrolledCourseDefaultMark = async (

@@ -14,12 +14,16 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { prisma } from '../../../shared/prisma';
+import { RedisClient } from '../../../shared/redis';
 import { asyncForEach } from '../../../shared/utils';
 import { StudentEnrolledCourseMarkService } from '../studentEnrolledCourseMark/studentEnrolledCourseMark.service';
 import { StudentSemesterPaymentService } from '../studentSemesterPayment/studentSemesterPayment.service';
 import { studentSemesterRegistrationCourseService } from '../studentSemesterRegistrationCourse/studentSemesterRegistrationCourse.service';
 import { SemesterRegistrationUtils } from './SemesterRegistrationUtils.utils';
 import {
+  EVENT_SEMESTER_REGISTRATION_CREATED,
+  EVENT_SEMESTER_REGISTRATION_DELETED,
+  EVENT_SEMESTER_REGISTRATION_UPDATED,
   semesterRegistrationRelationalFields,
   semesterRegistrationRelationalFieldsMapper,
   semesterRegistrationSearchableFields,
@@ -56,7 +60,12 @@ const insertIntoDB = async (
   const result = await prisma.semesterRegistration.create({
     data,
   });
-
+  if (result) {
+    await RedisClient.publish(
+      EVENT_SEMESTER_REGISTRATION_CREATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 const getAllFromDB = async (
@@ -189,7 +198,12 @@ const updateOneInDB = async (
       academicSemester: true,
     },
   });
-
+  if (result) {
+    await RedisClient.publish(
+      EVENT_SEMESTER_REGISTRATION_UPDATED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 
@@ -202,6 +216,12 @@ const deleteByIdFromDB = async (id: string): Promise<SemesterRegistration> => {
       academicSemester: true,
     },
   });
+  if (result) {
+    await RedisClient.publish(
+      EVENT_SEMESTER_REGISTRATION_DELETED,
+      JSON.stringify(result)
+    );
+  }
   return result;
 };
 const startMyRegistration = async (
